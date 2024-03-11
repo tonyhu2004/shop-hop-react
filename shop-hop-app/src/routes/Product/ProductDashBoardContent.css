@@ -1,0 +1,39 @@
+/* MovieTable.css */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border-color: lightgray;
+    border-style: solid;
+    border-width: 1px;
+}
+
+td, th {
+    padding: 0.5rem 0.5rem;
+}
+
+.table-header th {
+    padding: 0.5rem;
+}
+
+.table-row td {
+    padding: 0.5rem;
+    border: 1px solid inherit;
+}
+
+.even-row {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.odd-row {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.last-cell {
+    border-right: 1px solid #ddd;
+}
