@@ -2,6 +2,7 @@ import InputField from "../../components/InputField.jsx";
 import {useState} from "react";
 import ProductRepository from "../../repositories/ProductRepository.js";
 import { useNavigate } from "react-router-dom";
+import "../../components/Form.css";
 function AddProduct() {
     const productRepository = new ProductRepository()
     const [product, setProduct] = useState({
@@ -9,7 +10,7 @@ function AddProduct() {
         price: "",
         description: ""
     });
-    //const [errorMessage, setErrorMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const navigate = useNavigate();
     const handleChange = (name, value) => {
         setProduct((prev) => {
@@ -25,13 +26,30 @@ function AddProduct() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        addProduct()
-        .then(()=>{
-                navigate("/ProductDashboard")
-        })
-    }
+        const emptyField = Object.values(product).some(
+            (value) => value === ""
+        );
 
-// <p style={{color: "red"}}>{errorMessage}</p>
+        if (emptyField){
+            setErrorMessage("Product is not complete")
+            setProduct({
+                name: "",
+                price: "",
+                description: ""
+            })
+        }
+        else{
+            addProduct()
+                .then(() =>{
+                    setErrorMessage("");
+                    navigate("/ProductDashboard");
+                })
+                .catch((error) => {
+                    console.error("AddSubmit failed:", error);
+                    setErrorMessage("Failed to add product");
+                });
+        }
+    }
 
     return (
         <div className="FormContainer">
@@ -42,6 +60,7 @@ function AddProduct() {
                             onChange={(value) => handleChange('price', value)}/>
                 <InputField label="Description" type="textarea" value={product.description}
                             onChange={(value) => handleChange('description', value)}/>
+                <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
                 <button type="submit">Submit</button>
             </form>
         </div>

@@ -17,3 +17,11 @@
 .Card:hover {
     transform: scale(1.05);
 }
+
+.CardPrice{
+    color: red;
+}
+
+.CardName{
+    font-weight: bold;
+}

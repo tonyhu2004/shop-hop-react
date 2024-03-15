@@ -13,6 +13,17 @@ class ProductRepository {
         return await response.json();
     }
 
+    async GetPageProducts(currentPage, amount) {
+        const response = await fetch(`${this.apiDomain}/paged/?currentPage=${currentPage}&amount=${amount}`, {
+            method: 'GET',
+            //headers: { 'Authorization': `Bearer ${jwtToken}` },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    }
+
     async GetProductBy(id) {
         const response = await fetch(`${this.apiDomain}/${id}`, {
             method: 'GET',

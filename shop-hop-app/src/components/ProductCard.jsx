@@ -2,8 +2,8 @@ import "./ProductCard.css"
 function ProductCard(product){
     return(
         <div className="Card">
-            <p>Title: {product.name}</p>
-            <p>Price: €{product.price}</p>
+            <p className="CardName">{product.name}</p>
+            <p className="CardPrice">€{product.price}</p>
         </div>
     )
 }
