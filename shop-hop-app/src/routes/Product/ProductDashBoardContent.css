@@ -40,9 +40,21 @@ td, th {
 
 a{
     text-decoration: none;
-    color: royalblue;
+    color: #0073ff;
 }
 
 a:hover{
+    color: blue;
+}
+
+.deleteButton{
+    background-color: white;
+    padding: 0;
+    border: 0;
+    color: #0073ff;
+    font-size: 1em;
+}
+
+.deleteButton:hover{
     color: blue;
 }

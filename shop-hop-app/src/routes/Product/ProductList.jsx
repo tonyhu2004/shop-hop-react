@@ -9,7 +9,7 @@ function ProductList() {
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState("");
     const [buttonPress, setButtonPress] = useState(false);
-    const productsInPage = 5;
+    const productsInPage = 7;
 
     useEffect(() => {
         const initialSearchParams = new URLSearchParams(location.search);
@@ -17,6 +17,7 @@ function ProductList() {
             initialSearchParams.set('page', '1');
             const initialSearchString = initialSearchParams.toString();
             window.history.replaceState({}, '', `${location.pathname}?${initialSearchString}`);
+            console.log("test"+parseInt(initialSearchParams.get('page'), 10) )
         } else {
             setPage(parseInt(initialSearchParams.get('page'), 10));
         }
@@ -27,9 +28,8 @@ function ProductList() {
         const initialSearchParams = new URLSearchParams(location.search);
         async function fetchProducts() {
             if (page === parseInt(initialSearchParams.get('page'), 10) || buttonPress){
-                productRepository.GetPageProducts(page, productsInPage)
+                await productRepository.GetPageProducts(page, productsInPage)
                     .then(products => {
-                        console.log(products.products)
                         setProducts(products.products);
                         setPageCount(products.productCount / productsInPage);
                     })
@@ -83,13 +83,15 @@ function ProductList() {
             )}
             <ul className="PaginationBar">
                 <li>
-                    {page > 1 && <button onClick={decreasePage}>&lt;</button>}
+                    {page > 1 ? <button onClick={decreasePage}>&lt;</button>
+                        : <button className="transparentButton">&lt;</button>}
                 </li>
                 <li>
                     <p>{page}</p>
                 </li>
                 <li>
-                    {page < pageCount && <button onClick={increasePage}>&gt;</button>}
+                    {page < pageCount ? <button onClick={increasePage}>&gt;</button>
+                        : <button className="transparentButton">&gt;</button>}
                 </li>
             </ul>
         </div>

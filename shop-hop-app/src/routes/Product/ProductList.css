@@ -15,4 +15,19 @@
 }
 
 .PaginationBar li{
+
 }
+
+.PaginationBar button{
+    background-color: transparent;
+    color: black;
+    font-size: inherit;
+    border: none;
+    padding: 0.2em;
+    cursor: pointer;
+}
+
+.PaginationBar .transparentButton{
+    color: transparent;
+}
+

@@ -42,18 +42,20 @@ class ProductRepository {
                 //'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify(product),
-        });
+        })
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return await response.json();
     }
 
-    async EditProduct(product, id) {
-        const response = await fetch(`${this.apiDomain}/${id}`, {
+    async EditProduct(product) {
+        const response = await fetch(`${this.apiDomain}/${product.id}`, {
             method: 'PUT',
-            body: product,
-            //headers: { 'Authorization': `Bearer ${jwtToken}` },
+            headers: {'Content-Type': 'application/json',
+                //'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify(product)
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');

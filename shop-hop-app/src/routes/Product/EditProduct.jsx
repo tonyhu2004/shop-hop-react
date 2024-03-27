@@ -1,12 +1,11 @@
 import InputField from "../../components/InputField.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ProductRepository from "../../repositories/ProductRepository.js";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import "../../components/Form.css";
-import { toast } from 'react-toastify';
-
-function AddProduct() {
-    const productRepository = new ProductRepository()
+import {toast} from "react-toastify";
+function EditProduct() {
+    const{id} = useParams();
     const [product, setProduct] = useState({
         name: "",
         price: "",
@@ -14,6 +13,19 @@ function AddProduct() {
     });
     const [errorMessage, setErrorMessage] = useState("")
     const navigate = useNavigate();
+    useEffect(() => {
+        const productRepository = new ProductRepository()
+        async function GetProductBy(){
+            await productRepository.GetProductBy(id)
+                .then(product => {
+                    setProduct(product);
+                })
+                .catch(error => {
+                    console.error("Error fetching product:", error);
+                });
+        }
+        GetProductBy();
+    }, [id]);
     const handleChange = (name, value) => {
         setProduct((prev) => {
             return {
@@ -21,8 +33,9 @@ function AddProduct() {
             }
         })
     }
-    async function addProduct(){
-        return await productRepository.AddProduct(product)
+    async function editProduct(){
+        const productRepository = new ProductRepository()
+        return await productRepository.EditProduct(product)
             .catch(error => {
                 console.error("Error editing product:", error);
             });
@@ -42,20 +55,21 @@ function AddProduct() {
             })
         }
         else{
-            addProduct()
+            editProduct()
                 .then((responseData) =>{
                     if (responseData) {
+                        console.log(responseData)
                         setErrorMessage("");
                         navigate("/ProductDashboard");
-                        toast.success("Product added successfully!");
+                        toast.success("Product edited successfully!");
                     } else {
                         console.error("Offline error occurred");
-                        setErrorMessage("Failed to add product due to network issues");
+                        setErrorMessage("Failed to edit product due to network issues");
                     }
                 })
                 .catch((error) => {
-                    console.error("AddSubmit failed:", error);
-                    setErrorMessage("Failed to add product");
+                    console.error("EditSubmit failed:", error);
+                    setErrorMessage("Failed to edit product");
                 });
         }
     }
@@ -74,4 +88,4 @@ function AddProduct() {
         </div>
     )
 }
-export default AddProduct
+export default EditProduct
