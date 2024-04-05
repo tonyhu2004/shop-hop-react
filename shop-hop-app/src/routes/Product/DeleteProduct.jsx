@@ -44,5 +44,4 @@ function DeleteProduct(prop){
         </div>
     );
 }
-
 export default DeleteProduct
