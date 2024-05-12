@@ -5,31 +5,37 @@ import {useState} from "react";
 function DeleteProduct(prop){
     const productRepository = new ProductRepository();
     const [errorMessage, setErrorMessage] = useState("")
+    const [error, setError] = useState(null);
 
-    async function deleteProduct(){
-        return await productRepository.DeleteProduct(prop.id)
-            .catch(error => {
-            console.error("Error deleting product:", error);
-        });
+    if (error) {
+        throw error;
     }
-    function tryDeleteProduct(){
-        deleteProduct()
+
+    function deleteProduct(){
+        productRepository.DeleteProduct(prop.id)
             .then((responseData)=>{
                 if(responseData){
                     toast.success("Product successfully deleted");
                     prop.closeModal()
                     setErrorMessage("");
                 }
-                else{
-                    console.log(responseData)
-                    console.error("Offline error occurred");
-                    setErrorMessage("Failed to delete product due to network issues");
-                }
             })
             .catch((error) => {
-                console.error("Delete failed:", error);
-                setErrorMessage("Failed to delete product");
+                if(error instanceof TypeError){
+                    console.error("Offline error occurred");
+                    setErrorMessage("Failed to delete product");
+                }
+                else{
+                    console.error("Delete failed:", error);
+                    setErrorMessage("Failed to delete product");
+                    setError(error);
+
+                }
             });
+    }
+
+    function tryDeleteProduct(){
+        deleteProduct();
     }
 
     return (

@@ -1,6 +1,6 @@
-class AccountRepository {
-    domain = "https://localhost:32768";
-    apiDomain = this.domain + "/account";
+class UserRepository {
+    domain = "https://localhost:7072";
+    apiDomain = this.domain + "/User";
 
     async Login(account) {
         const response = await fetch(`${this.apiDomain}/login`, {
@@ -50,6 +50,9 @@ class AccountRepository {
 
     async IsUserAuthenticated() {
         const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken){
+            return false;
+        }
         const response = await fetch(`${this.apiDomain}/manage/info`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json',
@@ -60,4 +63,4 @@ class AccountRepository {
         return response.ok;
     }
 }
-export default AccountRepository;
+export default UserRepository;

@@ -2,12 +2,11 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import InputField from "../../components/InputField.jsx";
-import AccountRepository from "../../repositories/AccountRepository.js";
+import UserRepository from "../../repositories/UserRepository.js";
+import PropTypes from "prop-types";
 
-
-// eslint-disable-next-line no-unused-vars
 function Login({setIsAuthenticated}) {
-    const accountRepository = new AccountRepository()
+    const accountRepository = new UserRepository()
     const emptyAccount = {
         email: "",
         password: "",
@@ -74,4 +73,7 @@ function Login({setIsAuthenticated}) {
     )
 }
 
+Login.propTypes = {
+    setIsAuthenticated: PropTypes.func.isRequired,
+};
 export default Login;

@@ -10,16 +10,38 @@ function ProductDashBoardContent() {
     const [products, setProducts] = useState(null);
     const [id, setId] = useState(0);
     const [closeCount, setCloseCount] = useState(0);
+    const [error, setError] = useState(null);
+
+    if (error) {
+        throw error;
+    }
 
     useEffect(() => {
         const productRepository = new ProductRepository();
-        async function fetchProducts(){
-            const product = await productRepository.GetProducts();
-            setProducts(product)
+        function fetchProducts(){
+            productRepository.GetProducts()
+                .then((products)=>{
+                    const updatedProducts = products.map((p) => {
+                        if (p.imageUrl === undefined ||p.imageUrl === null || p.imageUrl === "") {
+                            return {
+                                ...p,
+                                imageUrl: `https://res.cloudinary.com/dxkq4oonm/image/upload/${p.name + p.id}.jpg`
+                            };
+                        }
+                        return p;
+                    });
+
+                    setProducts(updatedProducts)
+                })
+                .catch((error) => {
+                    console.error('Error fetching products:', error);
+                    setError(error);
+                });
         }
-        fetchProducts()
+            fetchProducts()
     }, [closeCount]);
     const [modalIsOpen, setIsOpen] = useState(false);
+
     function openModal(id) {
         setId(id);
         setIsOpen(true);
@@ -68,6 +90,9 @@ function ProductDashBoardContent() {
                         Title
                     </th>
                     <th>
+                        Image
+                    </th>
+                    <th>
                         Price
                     </th>
                     <th>
@@ -83,6 +108,16 @@ function ProductDashBoardContent() {
                     return (
                         <tr key={product.id}>
                             <td>{product.name}</td>
+                            <td>
+                            <img
+                                style={{
+                                    maxWidth: "100px", width: "100%",
+                                    borderRadius: "8px",
+                                }}
+                                src={product.imageUrl}
+                                alt={product.name}
+                            />
+                            </td>
                             <td>{product.price}</td>
                             <td>{product.description}</td>
                             <td>

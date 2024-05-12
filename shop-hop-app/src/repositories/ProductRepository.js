@@ -1,5 +1,5 @@
 class ProductRepository {
-    domain = "https://localhost:32768";
+    domain = "https://localhost:7072";
     apiDomain = this.domain + "/Product";
 
     async GetProducts() {
@@ -8,62 +8,90 @@ class ProductRepository {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${accessToken}` },
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.status === 200) {
+            return await response.json();
         }
-        return await response.json();
+        else {
+            throw new Response("", { status: response.status });
+        }
     }
 
     async GetPageProducts(currentPage, amount) {
         const response = await fetch(`${this.apiDomain}/paged/?currentPage=${currentPage}&amount=${amount}`, {
             method: 'GET',
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.status === 200) {
+            return await response.json();
         }
-        return await response.json();
+        else {
+            throw new Response("", { status: response.status });
+        }
     }
 
     async GetProductBy(id) {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch(`${this.apiDomain}/${id}`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${accessToken}` },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        try {
+            const response = await fetch(`${this.apiDomain}/${id}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${accessToken}` },
+            });
+
+            return await response.json();
+        } catch (error) {
+            console.log(error.response.messages)
+            throw new Response(error.response.messages, { status: error.response.status });
         }
-        return await response.json();
+    }
+
+    async GetProductDetailsBy(id) {
+        const accessToken = localStorage.getItem('accessToken');
+        try {
+            const response = await fetch(`${this.apiDomain}/${id}/Details`, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            return await response.json();
+        } catch (error) {
+            console.log(error.response.messages)
+            throw new Response(error.response.messages, { status: error.response.status });
+        }
     }
 
     async AddProduct(product) {
         const accessToken = localStorage.getItem('accessToken');
         const response = await fetch(`${this.apiDomain}`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json',
+            headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify(product),
+            body: product,
         })
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.status === 200) {
+            return await response.json();
         }
-        return await response.json();
+        else {
+            throw new Response("", { status: response.status });
+        }
     }
 
-    async EditProduct(product) {
+    async EditProduct(product, id) {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch(`${this.apiDomain}/${product.id}`, {
+        const response = await fetch(`${this.apiDomain}/${id}`, {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json',
+            headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify(product)
+            body: product,
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.status === 200) {
+            return await response.json();
         }
-        return await response.json();
+        else {
+            throw new Response("", { status: response.status });
+        }
     }
 
     async DeleteProduct(id) {
@@ -72,10 +100,12 @@ class ProductRepository {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${accessToken}` },
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.status === 200) {
+            return await response.json();
         }
-        return await response.json();
+        else {
+            throw new Response("", { status: response.status });
+        }
     }
 }
 export default ProductRepository;

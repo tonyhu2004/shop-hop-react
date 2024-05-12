@@ -9,23 +9,32 @@ function EditProduct() {
     const [product, setProduct] = useState({
         name: "",
         price: "",
-        description: ""
+        description: "",
+        image: "",
     });
     const [errorMessage, setErrorMessage] = useState("")
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+
+    if (error) {
+        throw error;
+    }
+
     useEffect(() => {
         const productRepository = new ProductRepository()
-        async function GetProductBy(){
-            await productRepository.GetProductBy(id)
+        function GetProductBy(){
+            productRepository.GetProductBy(id)
                 .then(product => {
                     setProduct(product);
                 })
                 .catch(error => {
+                    setError(error);
                     console.error("Error fetching product:", error);
                 });
         }
         GetProductBy();
     }, [id]);
+
     const handleChange = (name, value) => {
         setProduct((prev) => {
             return {
@@ -33,13 +42,40 @@ function EditProduct() {
             }
         })
     }
-    async function editProduct(){
-        const productRepository = new ProductRepository()
-        return await productRepository.EditProduct(product)
-            .catch(error => {
-                console.error("Error editing product:", error);
+
+    function editProduct(){
+        const productRepository = new ProductRepository();
+        const formData = new FormData();
+        formData.append('name', product.name);
+        formData.append('price', product.price);
+        formData.append('description', product.description);
+        formData.append('formFile', product.image);
+
+        productRepository.EditProduct(formData, id)
+            .then((responseData) =>{
+                if (responseData) {
+                    setErrorMessage("");
+                    navigate("/ProductDashboard");
+                    toast.success("Product edited successfully!");
+                }
+            })
+            .catch((error) => {
+                if (error instanceof TypeError) {
+                    console.error("Offline error occurred");
+                    setErrorMessage("Failed to edit product");
+                }
+                else{
+                    console.error("EditSubmit failed:", error);
+                    setErrorMessage("Failed to edit product");
+                    setError(error);
+                }
             });
     }
+
+    const saveImage = (e) => {
+        handleChange('image', e.target.files[0]);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -51,26 +87,12 @@ function EditProduct() {
             setProduct({
                 name: "",
                 price: "",
-                description: ""
+                description: "",
+                image: "",
             })
         }
         else{
-            editProduct()
-                .then((responseData) =>{
-                    if (responseData) {
-                        console.log(responseData)
-                        setErrorMessage("");
-                        navigate("/ProductDashboard");
-                        toast.success("Product edited successfully!");
-                    } else {
-                        console.error("Offline error occurred");
-                        setErrorMessage("Failed to edit product due to network issues");
-                    }
-                })
-                .catch((error) => {
-                    console.error("EditSubmit failed:", error);
-                    setErrorMessage("Failed to edit product");
-                });
+            editProduct();
         }
     }
     return (
@@ -80,6 +102,8 @@ function EditProduct() {
                             onChange={(value) => handleChange('name', value)}/>
                 <InputField label="Price" type="price" value={product.price}
                             onChange={(value) => handleChange('price', value)}/>
+                <input type="file" accept="image/png, image/jpeg"
+                       onChange={saveImage}/>
                 <InputField label="Description" type="textarea" value={product.description}
                             onChange={(value) => handleChange('description', value)}/>
                 <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
@@ -88,4 +112,5 @@ function EditProduct() {
         </div>
     )
 }
+
 export default EditProduct

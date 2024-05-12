@@ -2,11 +2,11 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import InputField from "../../components/InputField.jsx";
-import AccountRepository from "../../repositories/AccountRepository.js";
+import UserRepository from "../../repositories/UserRepository.js";
 
 
 function Register() {
-    const accountRepository = new AccountRepository()
+    const accountRepository = new UserRepository()
     const emptyAccount = {
         email: "",
         password: "",
