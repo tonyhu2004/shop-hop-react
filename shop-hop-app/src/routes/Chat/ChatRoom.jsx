@@ -21,6 +21,7 @@ function ChatRoom() {
     const [currentUserId, setCurrentUserId] = useState("");
     const connection = chatHubConnection(localStorage.getItem('accessToken'));
     const messagesEndRef = useRef(null);
+    const chatRepository = new ChatRepository();
 
     useEffect(() => {
         scrollDown();
@@ -29,7 +30,6 @@ function ChatRoom() {
     useEffect(() => {
         const getMessages = async () => {
             try{
-                const chatRepository = new ChatRepository();
                 const Chat = await chatRepository.GetChatBy(user1Id, user2Id)
                 setChatId(Chat.id);
                 setMessages(Chat.messageViewModels.slice().reverse());
@@ -54,18 +54,20 @@ function ChatRoom() {
                 } catch (error) {
                     console.error('Error starting SignalR connection:', error);
                 }
-                // await connection.invoke('AddToGroup', chatId)
-                //     .then(()=>{
-                //         console.log('Group created/ added user to group');
-                //     })
-                //     .catch((error)=>{
-                //         console.log(" get it ")
-                //         console.error(error)
-                //     })
-
+                chatRepository.AddToGroup(chatId, connection.connectionId)
+                    .then(()=>{
+                        console.log('Group created/ added user to group');
+                    })
+                    .catch((error)=>{
+                        console.log(" get it ")
+                        console.error(error)
+                    })
             };
 
             connection.on('ReceiveMessage', (message) => {
+                console.log(message)
+                console.log(message.senderUserId)
+                console.log(currentUserId)
                 setMessages([message, ...messages]);
             });
 
@@ -88,35 +90,23 @@ function ChatRoom() {
 
         if (newMessage.text !== ""){
             try {
-
-                // connection.invoke('SendMessage', {
-                //     chatId: chatId,
-                //     text: newMessage.text,
-                // }).then(() => {
-                //     setNewMessage({
-                //         id: "",
-                //         chatId: "",
-                //         senderUserId: "",
-                //         text: "",
-                //         sendDate: "",
-                //     })}
-                // ).catch()
                 if (connection.state === signalR.HubConnectionState.Connected) {
-                    console.log(connection)
-                    console.log(newMessage.text);
+                    const formData = new FormData();
+                    formData.append('chatId', chatId);
+                    formData.append('text', newMessage.text);
 
-                    connection.invoke('SendMessageAll', {
-                        chatId: chatId,
-                        text: newMessage.text,
-                    }).then(() => {
+                    chatRepository.SendMessage(formData)
+                        .then(() => {
                         setNewMessage({
                             id: "",
                             chatId: "",
                             senderUserId: "",
                             text: "",
                             sendDate: "",
-                        })}
-                    ).catch()
+                        })})
+                        .catch((error)=>{
+                            console.error(error)
+                        })
                 } else {
                     console.log("Sending message");
                 }
@@ -132,34 +122,38 @@ function ChatRoom() {
         }
     }
     return (
-        (
-            localStorage.getItem('accessToken') &&
-            <div className="ChatRoom">
-                {
-                    messages ? (
-                            <ul className="MessageList">
-                                {messages.map((message, index) => (
-                                    currentUserId === message.senderUserId
-                                        ? <li className="MessageItem CurrentUserItem" key={index}>{message.text}</li>
-                                        : <li className="MessageItem OtherUserItem" key={index}>{message.text}</li>
-                                ))}
-                            </ul>
-                        )
-                        :
-                        <p>loading...</p>
-                }
-                <div ref={messagesEndRef}></div>
-                <form onSubmit={sendMessage} className="MessageForm">
-                    <input
-                        className="SendMessageBar"
-                        type="text"
-                        value={newMessage.text}
-                        onChange={(e) => handleChange('text', e.target.value)}
-                    />
-                    <button className="SendMessageButton" hidden type="submit">Send</button>
-                </form>
+        <div className="ChatPage">
+            <div className="ChatFrame">
+                <div className="ChatRoom">
+                    {
+                        messages ? (
+                                <ul className="MessageList">
+                                    {messages.map((message, index) => (
+                                        console.log(currentUserId),
+                                            console.log(message.senderUserId),
+                                            currentUserId === message.senderUserId
+                                                ?
+                                                <li className="MessageItem CurrentUserItem" key={index}>{message.text}</li>
+                                                : <li className="MessageItem OtherUserItem" key={index}>{message.text}</li>
+                                    ))}
+                                </ul>
+                            )
+                            :
+                            <p>loading...</p>
+                    }
+                    <div ref={messagesEndRef}></div>
+                    <form onSubmit={sendMessage} className="MessageForm">
+                        <input
+                            className="SendMessageBar"
+                            type="text"
+                            value={newMessage.text}
+                            onChange={(e) => handleChange('text', e.target.value)}
+                        />
+                        <button className="SendMessageButton" hidden type="submit">Send</button>
+                    </form>
+                </div>
             </div>
-        )
+        </div>
     );
 }
 

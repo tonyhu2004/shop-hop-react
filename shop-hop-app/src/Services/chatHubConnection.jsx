@@ -1,5 +1,5 @@
-"use strict";
 import { HubConnectionBuilder } from '@microsoft/signalr';
+
 
 function chatHubConnection(accessToken) {
 

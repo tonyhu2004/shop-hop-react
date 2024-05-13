@@ -1,7 +1,7 @@
 import ProductRepository from "../../repositories/ProductRepository.js";
 import {useEffect, useState} from "react";
 import star from "../../assets/star.png";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import "./ProductDetails.css";
 import AddReview from "../Review/AddReview.jsx";
 import Modal from "react-modal";
@@ -79,7 +79,11 @@ function ProductDetails({isAuthenticated}) {
                         <div className="details-header">
                             <div style={{justifyContent: 'center', display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
                                 <h1 style={{margin: '0'}}>{product.name}</h1>
-                                <p>{product.username}</p>
+                                {
+                                    product.userId === product.currentUserId
+                                        ? (<p>{product.username}</p>)
+                                        : (<Link to={`/Chat/${product.userId}/${product.currentUserId}`}>{product.username}</Link>)
+                                }
                             </div>
                             <div style={{display: 'flex', alignItems: 'center'}}>
                                 <img src={star} alt="" width="20"/>
