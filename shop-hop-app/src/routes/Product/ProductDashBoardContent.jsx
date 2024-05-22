@@ -107,7 +107,7 @@ function ProductDashBoardContent() {
                 {products.map((product) => {
                     return (
                         <tr key={product.id}>
-                            <td>{product.name}</td>
+                            <td data-cy="name">{product.name}</td>
                             <td>
                             <img
                                 style={{
@@ -123,7 +123,7 @@ function ProductDashBoardContent() {
                             <td>
                                 <Link to={`Edit/${product.id}`}>Edit</Link>
                                 <br/>
-                                <button onClick={()=>{openModal(product.id)}} className="deleteButton">Delete</button>
+                                <button data-cy="openDelete" onClick={()=>{openModal(product.id)}} className="deleteButton">Delete</button>
                             </td>
                         </tr>
                     )

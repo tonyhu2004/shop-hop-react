@@ -62,12 +62,16 @@ function Login({setIsAuthenticated}) {
     return (
         <div className="FormContainer">
             <form onSubmit={handleSubmit}>
-                <InputField label="Email" type="text" value={account.email}
-                            onChange={(value) => handleChange('email', value)}/>
-                <InputField label="Password" type="password" value={account.password}
-                            onChange={(value) => handleChange('password', value)}/>
+                <InputField label="Email" type="text" cy="email"
+                            value={account.email}
+                            onChange={(value) => handleChange('email', value)}
+                            />
+                <InputField label="Password" type="password" cy="password"
+                            value={account.password}
+                            onChange={(value) => handleChange('password', value)}
+                            />
                 <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
-                <button type="submit">Login</button>
+                <button type="submit" data-cy="submit">Login</button>
             </form>
         </div>
     )

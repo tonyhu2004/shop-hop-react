@@ -42,10 +42,10 @@ function DeleteProduct(prop){
         <div className="FormContainer" style={{display: "flex", flexDirection: "column"}}>
             <h2>Are you sure?</h2>
 
-            <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
+            <p data-cy="error" style={{color: "red", marginTop: 0}}>{errorMessage}</p>
             <div>
                 <button onClick={prop.closeModal}>Cancel</button>
-                <button onClick={tryDeleteProduct}>Delete</button>
+                <button data-cy="delete" onClick={tryDeleteProduct}>Delete</button>
             </div>
         </div>
     );

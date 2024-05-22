@@ -98,16 +98,16 @@ function EditProduct() {
     return (
         <div className="FormContainer">
             <form onSubmit={handleSubmit}>
-                <InputField label="Name" type="text" value={product.name}
+                <InputField label="Name" cy="name"  type="text" value={product.name}
                             onChange={(value) => handleChange('name', value)}/>
-                <InputField label="Price" type="price" value={product.price}
+                <InputField label="Price" cy="price" type="price" value={product.price}
                             onChange={(value) => handleChange('price', value)}/>
-                <input type="file" accept="image/png, image/jpeg"
+                <input type="file" data-cy="image" accept="image/png, image/jpeg"
                        onChange={saveImage}/>
-                <InputField label="Description" type="textarea" value={product.description}
+                <InputField label="Description" cy="description" type="textarea" value={product.description}
                             onChange={(value) => handleChange('description', value)}/>
-                <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
-                <button type="submit">Submit</button>
+                <p data-cy="error" style={{color: "red", marginTop: 0}}>{errorMessage}</p>
+                <button data-cy="submit" type="submit">Submit</button>
             </form>
         </div>
     )

@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Laptop",
+    "price": "1020.90",
+    "imageUrl": "https://m.media-amazon.com/images/I/71AY2Pd3MHL._AC_UF1000,1000_QL80_.jpg",
+    "description": "A great laptop for all purposes!"
+  },
+  {
+    "id": 2,
+    "name": "Bottle",
+    "price": "20.50",
+    "imageUrl": "https://www.ikea.com/nl/en/images/products/ikea-365-water-bottle-dark-grey__0916298_pe785100_s5.jpg",
+    "description": "A bottle great for drinking!"
+  },
+  {
+    "id": 3,
+    "name": "Chair",
+    "price": "560.20",
+    "imageUrl": "https://m.media-amazon.com/images/I/71P9QF0BYLL.jpg",
+    "description": "A chair feels great!"
+  },
+  {
+    "id": 4,
+    "name": "Book",
+    "price": "200",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8K1D2djesp73yCm8ePmDzuK9HMvjdwoNqgRMbMu8aEg&s",
+    "description": "An amazing book description"
+  }
+]

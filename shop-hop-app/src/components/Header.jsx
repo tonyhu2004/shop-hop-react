@@ -27,7 +27,7 @@ function Header({isAuthenticated, logout}){
                                 <Link to={`/Account/Profile`}>Profile</Link>
                             </li>
                             <li>
-                                <button style={{padding: 0,  fontSize: "1em", color: "black", backgroundColor: "white", border: 0}} onClick={logout}>Logout</button>
+                                <button data-cy="logout" style={{padding: 0,  fontSize: "1em", color: "black", backgroundColor: "white", border: 0}} onClick={logout}>Logout</button>
                             </li>
                         </>
                     ) : (
