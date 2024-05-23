@@ -16,9 +16,10 @@ header a{
   flex-direction: row;
 }
 
-nav{
+nav {
+  width: 100%;
   display: flex;
-  align-items: center;
+  justify-content: space-between; /* Corrected property value */
 }
 
 .navBar li{

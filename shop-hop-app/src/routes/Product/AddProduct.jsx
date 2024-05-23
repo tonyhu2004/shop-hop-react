@@ -10,10 +10,17 @@ function AddProduct() {
     const [product, setProduct] = useState({
         name: "",
         price: "",
-        description: ""
+        description: "",
+        image: "",
     });
     const [errorMessage, setErrorMessage] = useState("")
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+
+    if (error) {
+        throw error;
+    }
+
     const handleChange = (name, value) => {
         setProduct((prev) => {
             return {
@@ -21,12 +28,39 @@ function AddProduct() {
             }
         })
     }
-    async function addProduct(){
-        return await productRepository.AddProduct(product)
-            .catch(error => {
-                console.error("Error editing product:", error);
+
+    function addProduct(){
+        const formData = new FormData();
+        formData.append('name', product.name);
+        formData.append('price', product.price);
+        formData.append('description', product.description);
+        formData.append('formFile', product.image);
+
+        productRepository.AddProduct(formData)
+            .then((responseData) =>{
+                if (responseData) {
+                    setErrorMessage("");
+                    navigate("/ProductDashboard");
+                    toast.success("Product added successfully!");
+                }
+            })
+            .catch((error) => {
+                if (error instanceof TypeError) {
+                    console.error("Offline error occurred");
+                    setErrorMessage("Failed to add product");
+                }
+                else{
+                    console.error("AddSubmit failed:", error);
+                    setErrorMessage("Failed to add product");
+                    setError(error);
+                }
             });
     }
+
+    const saveImage = (e) => {
+        handleChange('image', e.target.files[0]);
+    }
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -38,40 +72,31 @@ function AddProduct() {
             setProduct({
                 name: "",
                 price: "",
-                description: ""
+                description: "",
+                image: "",
             })
         }
         else{
-            addProduct()
-                .then((responseData) =>{
-                    if (responseData) {
-                        setErrorMessage("");
-                        navigate("/ProductDashboard");
-                        toast.success("Product added successfully!");
-                    } else {
-                        console.error("Offline error occurred");
-                        setErrorMessage("Failed to add product due to network issues");
-                    }
-                })
-                .catch((error) => {
-                    console.error("AddSubmit failed:", error);
-                    setErrorMessage("Failed to add product");
-                });
+            addProduct();
         }
     }
+
     return (
         <div className="FormContainer">
             <form onSubmit={handleSubmit}>
-                <InputField label="Name" type="text" value={product.name}
+                <InputField label="Name" cy="name" type="text" value={product.name}
                             onChange={(value) => handleChange('name', value)}/>
-                <InputField label="Price" type="price" value={product.price}
+                <InputField label="Price" cy="price" type="price" value={product.price}
                             onChange={(value) => handleChange('price', value)}/>
-                <InputField label="Description" type="textarea" value={product.description}
+                <input type="file" data-cy="image" accept="image/png, image/jpeg"
+                       onChange={saveImage}/>
+                <InputField label="Description" cy="description" type="textarea" value={product.description}
                             onChange={(value) => handleChange('description', value)}/>
-                <p style={{color: "red", marginTop: 0}}>{errorMessage}</p>
-                <button type="submit">Submit</button>
+                <p data-cy="error" style={{color: "red", marginTop: 0}}>{errorMessage}</p>
+                <button data-cy="submit" type="submit">Submit</button>
             </form>
         </div>
     )
 }
+
 export default AddProduct
