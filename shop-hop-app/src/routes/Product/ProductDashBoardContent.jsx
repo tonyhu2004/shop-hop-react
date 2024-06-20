@@ -118,7 +118,7 @@ function ProductDashBoardContent() {
                                 alt={product.name}
                             />
                             </td>
-                            <td>{product.price}</td>
+                            <td>€{product.price}</td>
                             <td>{product.description}</td>
                             <td>
                                 <Link to={`Edit/${product.id}`}>Edit</Link>

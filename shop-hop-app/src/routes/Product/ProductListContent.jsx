@@ -18,7 +18,6 @@ function ProductListContent() {
             initialSearchParams.set('page', '1');
             const initialSearchString = initialSearchParams.toString();
             window.history.replaceState({}, '', `${location.pathname}?${initialSearchString}`);
-            console.log("test"+parseInt(initialSearchParams.get('page'), 10) )
         } else {
             setPage(parseInt(initialSearchParams.get('page'), 10));
         }
@@ -31,7 +30,7 @@ function ProductListContent() {
             if (page === parseInt(initialSearchParams.get('page'), 10) || buttonPress){
                 await productRepository.GetPageProducts(page, productsInPage)
                     .then(products => {
-                        const updatedProducts = products.products.map((p) => {
+                        setProducts(products.products.map((p) => {
                             if (p.imageUrl === undefined ||p.imageUrl === null || p.imageUrl === "") {
                                 return {
                                     ...p,
@@ -39,9 +38,7 @@ function ProductListContent() {
                                 };
                             }
                             return p;
-                        });
-
-                        setProducts(updatedProducts)
+                        }))
                         setPageCount(products.productCount / productsInPage);
                     })
                     .catch(error => {
@@ -101,13 +98,13 @@ function ProductListContent() {
                 <li>
                     <p>{page}</p>
                 </li>
-                <li>
-                    {page < pageCount ? <button onClick={increasePage}>&gt;</button>
-                        : <button className="transparentButton">&gt;</button>}
-                </li>
+                    <li>
+                        {page < pageCount ? <button onClick={increasePage}>&gt;</button>
+                            : <button className="transparentButton">&gt;</button>}
+                    </li>
             </ul>
         </div>
-    );
+);
 }
 
 export default ProductListContent;

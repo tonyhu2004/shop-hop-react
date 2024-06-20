@@ -6,7 +6,6 @@ import "./ProductDetails.css";
 import AddReview from "../Review/AddReview.jsx";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
-import "./ProductDetails.css";
 
 function ProductDetails({isAuthenticated}) {
     const navigate = useNavigate()
